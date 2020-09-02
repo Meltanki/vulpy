@@ -17,7 +17,6 @@ pipeline {
 		stage('Remote Fortify Scan Upload to SSC') {
 			steps {
 				fortifyRemoteScan buildID: 'vulpy',
-				scanOptions:"-analyzers" "controlflow"],
 				uploadSSC: [appName: 'vulpy', appVersion: '1']
 			}
 		}
