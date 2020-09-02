@@ -1,16 +1,24 @@
 pipeline {
     agent any 
 	stages {
-		stage('Fortify Remote Arguments') {
+		stage('Fortify Clean') {
 			steps {
-				fortifyRemoteArguments transOptions: '-Xmx4G',
-				scanOptions: '"-analyzers" "dataflow"'
+				fortifyClean buildID: 'vulpy',
+				logFile: 'vulpyFortify.log'
 			}
 		}
-		stage('Fortify Remote Analysis') {
+		stage('Fortify Translate') {
 			steps {
-				fortifyRemoteAnalysis remoteAnalysisProjectType: fortifyPython(),
-				uploadSSC: [appName: 'vulpy', appVersion: '1.0']
+				fortifyTranslate buildID: 'vulpy',
+				logFile: 'vulpy-translate.log',
+				projectScanType: fortifyOther()	
+			}
+		}
+		stage('Remote Fortify Scan Upload to SSC') {
+			steps {
+				fortifyRemoteScan buildID: 'vulpy',
+				scanOptions:"-analyzers" "controlflow"],
+				uploadSSC: [appName: 'vulpy', appVersion: '1']
 			}
 		}
 	}
