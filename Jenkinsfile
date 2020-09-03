@@ -1,23 +1,14 @@
 pipeline {
-    agent any 
+	agent any
 	stages {
-		stage('Fortify Clean') {
+		stage('Fortify Remote Arguments') {
 			steps {
-				fortifyClean buildID: 'vulpy',
-				logFile: 'vulpyFortify.log'
+				fortifyTranslate addJVMOptions: '', buildID: 'vulpy', excludeList: '', logFile: '', maxHeap: '', projectScanType: fortifyOther(otherIncludesList: '', otherOptions: '')
 			}
 		}
-		stage('Fortify Translate') {
+		stage('Fortify Remote Analysis') {
 			steps {
-				fortifyTranslate buildID: 'vulpy',
-				logFile: 'vulpy-translate.log',
-				projectScanType: fortifyOther()	
-			}
-		}
-		stage('Remote Fortify Scan Upload to SSC') {
-			steps {
-				fortifyRemoteScan buildID: 'vulpy',
-				uploadSSC: [appName: 'vulpy', appVersion: '1']
+				fortifyRemoteAnalysis remoteAnalysisProjectType: fortifyPython(pythonRequirementsFile: 'requirements.txt', pythonVersion: '3', pythonVirtualEnv: ''), uploadSSC: [appName: 'vulpy', appVersion: '1.0']
 			}
 		}
 	}
