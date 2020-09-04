@@ -1,24 +1,11 @@
 pipeline {
-    agent any 
+	agent any
 	stages {
 		stage('Fortify Clean') {
 			steps {
-				fortifyClean buildID: 'vulpy',
-				logFile: 'vulpyFortify.log'
-			}
-		}
-		stage('Fortify Translate') {
-			steps {
-				fortifyTranslate buildID: 'vulpy',
-				logFile: 'vulpy-translate.log',
-				projectScanType: fortifyOther()	
-			}
-		}
-		stage('Remote Fortify Scan Upload to SSC') {
-			steps {
-				fortifyRemoteScan buildID: 'vulpy',
-				uploadSSC: [appName: 'vulpy', appVersion: '1']
+			  sh script: "/var/jenkins_home/Fortify/Fortify_SCA_and_Apps_19.1.0/bin/sourceanalyzer -b vulpy -clean" label: 'fortify clean'
 			}
 		}
 	}
 }
+
