@@ -1,11 +1,15 @@
 pipeline {
 	agent any
 	stages {
-		stage('Fortify Clean') {
+		stage('Fortify Remote Arguments') {
 			steps {
-			  sh script: "/var/jenkins_home/Fortify/Fortify_SCA_and_Apps_19.1.0/bin/sourceanalyzer -Xmx16G -b vulpy -clean", label: 'fortify clean'
+				fortifyTranslate addJVMOptions: '', buildID: 'vulpy', excludeList: '', logFile: '', maxHeap: '', projectScanType: fortifyOther(otherIncludesList: '', otherOptions: '')
+			}
+		}
+		stage('Fortify Remote Analysis') {
+			steps {
+				fortifyRemoteAnalysis remoteAnalysisProjectType: fortifyPython(pythonRequirementsFile: 'requirements.txt', pythonVersion: '3', pythonVirtualEnv: ''), uploadSSC: [appName: 'vulpy', appVersion: '1.0']
 			}
 		}
 	}
 }
-
